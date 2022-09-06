@@ -1,0 +1,153 @@
+﻿<!--<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body style="padding-top:20px">
+    <div class="col-md-10 col-md-offset-1">
+        10 col and 1 or right and 1 or left
+        <div class="well">
+            <input type="button" id="btnLoadEmployees" class="btn btn-success" value="LoadEmployees" />
+            <span id="spanUsername" class="text-muted"></span>
+            <input type="button" id="btnLogOff" class="btn btn-success pull-right" value="Log Off" />
+        </div>
+        <div class="well hidden" id="div_data">
+            <table class="table table-bordered" id="table_Data">
+                <thead>
+                    <tr>
+                        <th>PDF File</th>
+                        <th>Note</th>
+                        <th>Username</th>
+
+
+                    </tr>
+
+                </thead>
+                <tbody id="table_body"> </tbody>
+
+
+            </table>
+
+
+
+
+        </div>
+        <div class="modal fade" tabindex="-1" id="errorModel" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-m">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal">&times; </button>
+                        <h4>Session Expired</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <h2>Please close this message to login again</h2>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn btn-success">
+                            CLose
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="divError" class="alert alert-danger collapse">
+            <a id="linkClose" class="close" href="#"> &times; </a>
+            <div id="divErrorText"></div>
+        </div>
+    </div>
+
+
+
+
+    <script src="Scripts/jquery-3.4.1.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#spanUsername').text(localStorage.getItem('username_key'));
+
+            //if session expired then go back to login page
+            if (localStorage.getItem('accessToken') == null)
+            {
+                window.location.href = "LoginPage.html";
+
+            }
+            //close error note
+            $('#linkClose').click(function () {
+                $('#divError').hide('fade');
+            });
+            //log off
+            $('#btnLogOff').click(function () {
+                localStorage.removeItem('accessToken');
+                window.location.href = "LoginPage.html";
+            });
+
+            //close error model and go back to login page
+            $('#errorModel').on('hidden.bs.modal', function () {
+
+
+                window.location.href = "LoginPage.html";
+            });
+
+
+
+
+
+            $('#btnLoadEmployees').click(function () {
+                $.ajax({
+
+
+                    url: 'http://localhost:44338/api/Employee',
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'bearer ' + localStorage.getItem('accessToken')
+
+                    },
+                      //headers: {"Authorization": localStorage.getItem('token')}
+
+                    success: function (data) {
+                        $('#div_data').removeClass('hidden');
+                        $('#table_body').empty();
+
+                        $.each(data, function (index, value) {
+                            var row = $('<tr><td>' + value.ID + '</td ><td>'
+                                + value.firstName + '</td><td>'
+                                + value.lastName + '</td><td>'
+                                + value.gender + '</td><td>'
+                                + value.salary + '</td><td>'
+
+                            );
+
+                            $('#table_Data').append(row);
+                        });
+
+                    },
+                    error: function (jqxhr) {
+
+                        //401 mean sessin expired
+                        if (jqxhr.status == "401") {
+                            //it mean session expired
+                            $('#errorModel').modal('show');
+
+                        }
+                        else {
+                            $('#divErrorText').text(jqxhr.responseText);//fill it with error
+                            //now display error
+                            $('#divError').show('fade'); }
+
+
+                    },
+
+
+                });
+
+
+            });
+
+        });
+    </script>
+</body>
+</html>-->

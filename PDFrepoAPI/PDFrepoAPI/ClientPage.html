@@ -1,0 +1,274 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+
+</head>
+<body style="padding-top:20px">
+    <div class="col-md-10 col-md-offset-1">
+
+        <div class="well" id="credential">
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr class="success">
+                        <th colspan="2">
+                            Existing user login
+                            <!--<a class="btn btn-success pull-right" href="Register.html">Register</a>-->
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            Username
+                        </td>
+                        <td>
+                            <input type="text" placeholder="Username" id="txtusername" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Password
+                        </td>
+                        <td>
+                            <input type="password" placeholder="password" id="txtpassword" />
+                        </td>
+                    </tr>
+
+                    <tr class="success">
+                        <td colspan="2">
+                            <input type="button" class="btn btn-success" id="btn" value="LogIn" />
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+        </div>
+
+
+        <div class=" well hidden " id="hidden_form">
+
+
+            <form name="form1" method="post" enctype="multipart/form-data" action="api/PDFrepo/SaveData">
+                <input name="id" id="userid" type="text" class="hidden" />
+
+                <table class="table table-bordered" id="table_Data">
+
+                    <thead>
+                        <tr class="info">
+                            <th colspan="2">
+                                <!--<a class="btn btn-info pull-right" id="getData" href="GetData.html">Get Data</a>-->
+                                <input type="button" class="btn btn-warning pull-right" id="getData" value="Get Data" />
+
+                            </th>
+
+                        </tr>
+                        <tr>
+                            <th>PDF File</th>
+                            <th>Note</th>
+
+
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input name="image1" type="file" />
+                            </td>
+                            <td>
+                                <input name="note" type="text" />
+                            </td>
+
+                        </tr>
+
+                        <tr class="success">
+                            <td colspan="2">
+                                <input type="submit" class="btn btn-success" id="submt" value="Submit" />
+                            </td>
+
+                        </tr>
+                    </tbody>
+
+
+                </table>
+
+
+            </form>
+
+        </div>
+        <div id="result_data" class="hidden">
+
+            <!--<table class="table table-bordered " id="table_Data">
+            <thead>
+                <tr>-->
+            <!--<th>PDF File</th>-->
+            <!--<th>id</th>
+                        <th>Note</th>
+
+                    </tr>
+
+                </thead>
+                <tbody id="table_body"> </tbody>
+
+
+            </table>-->
+            <table id="tblFiles" cellpadding="0" cellspacing="0" class="table table-bordered ">
+                <tr>
+                    <th style="width:50px">File ID</th>
+                    <th style="width:120px">File Name</th>
+                    <th style="width:120px">File Note</th>
+                    <th style="width:80px">Username</th>
+                    <th style="width:80px">Download</th>
+
+
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+        <ul id="ulArchive" />
+
+    </div>
+
+
+    <meta charset="utf-8" />
+    <script src="Scripts/jquery-3.4.1.js"></script>
+    <script src="Scripts/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var ularchive = $('#ulArchive');
+
+
+            $('#btn').click(function () {
+                var username = $('#txtusername').val();
+                var password = $('#txtpassword').val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: "api/PDFrepo/checkAuthontication",
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(username + ':' + password)
+                    },
+                    success: function (data) {
+                        $('#hidden_form').removeClass('hidden');
+                        $('#credential').hide();
+                        ularchive.empty();
+
+                        document.getElementById('userid').value = data;
+                        //   document.getElementById('getData').value = data;
+                    },
+
+                    complete: function (jqxhr) {
+                        if (jqxhr.status == '401') {
+                            ularchive.empty();
+                            ularchive.append('<li style="color:red">' + jqxhr.status + ' : ' + jqxhr.statusText + '</li>')
+                        }
+                    }
+                })
+
+
+
+
+            });
+
+            $('#getData').click(function () {
+
+                $('#hidden_form').hide();
+
+            })
+
+            $('#getData').click(function () {
+                // get its hidden id and pass it to new get resource
+                //var id = $('#userid').val();
+                var username = $('#txtusername').val();
+                var password = $('#txtpassword').val();
+                $.ajax({
+                    type: "POST",
+                    url: "/api/PDFrepo/GetFiles",
+                    data: '{}',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    //dataType: "json",
+                    //type: 'GET',
+                    //url: "api/PDFrepo/GetData",
+                    //dataType: 'json',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(username + ':' + password)
+                    },
+
+                    success: function (files) {
+                        $('#result_data').removeClass('hidden');
+
+                        $.each(files, function () {
+                            //values from backend
+                            AppendRow(this._id, this._Name, this._note, this._username);
+                        });
+                        ularchive.empty();
+
+                    },
+
+
+                    error: function (response) {
+                        console.log(response)
+                        alert("error   ");
+
+                    }
+                    ,
+
+                    complete: function (jqxhr) {
+                        if (jqxhr.status == '401') {
+                            ularchive.empty();
+                            ularchive.append('<li style="color:red">' + jqxhr.status + ' : ' + jqxhr.statusText + '</li>')
+                        }
+                    }
+
+                })
+
+            });
+
+
+
+            function AppendRow(id, name, note, userName) {
+                var row = $("#tblFiles tbody tr:last-child");
+
+                //Remove if the row is dummy row.
+                if (row.find("td:empty").length > 0) {
+                    row.remove();
+                }
+
+                row = row.clone();
+                $("td", row).eq(0).html(id);
+                $("td", row).eq(1).html(name);
+                $("td", row).eq(2).html(note);
+                $("td", row).eq(3).html(userName);
+
+                $("td", row).eq(4).html("");
+                var a = $("<a />");
+                a[0].href = '/api/PDFrepo/GetFile?FileId='+id;
+                a.html("Download");
+                $("td", row).eq(4).append(a);
+             
+
+
+                $("#tblFiles tbody").append(row);
+            };
+        });
+
+
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="PDFsystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="PDFrepository_TBL">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="pdf" Type="varbinary(max)" />
+    <Property Name="note" Type="nvarchar" MaxLength="50" />
+    <Property Name="FileName" Type="nvarchar" MaxLength="50" />
+    <Property Name="contentType" Type="nvarchar" MaxLength="50" />
+    <Property Name="userID" Type="int" />
+  </EntityType>
+  <EntityType Name="users_TBL">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="username" Type="nvarchar" MaxLength="50" />
+    <Property Name="password" Type="nvarchar" MaxLength="50" />
+    <Property Name="fullname" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <Association Name="FK_PDFrepository_TBL_users_TBL">
+    <End Role="users_TBL" Type="Self.users_TBL" Multiplicity="0..1" />
+    <End Role="PDFrepository_TBL" Type="Self.PDFrepository_TBL" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="users_TBL">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="PDFrepository_TBL">
+        <PropertyRef Name="userID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="PDFsystemModelStoreContainer">
+    <EntitySet Name="PDFrepository_TBL" EntityType="Self.PDFrepository_TBL" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="users_TBL" EntityType="Self.users_TBL" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_PDFrepository_TBL_users_TBL" Association="Self.FK_PDFrepository_TBL_users_TBL">
+      <End Role="users_TBL" EntitySet="users_TBL" />
+      <End Role="PDFrepository_TBL" EntitySet="PDFrepository_TBL" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="PDFsystemModelStoreContainer" CdmEntityContainer="PDFsystemEntities1">
+    <EntitySetMapping Name="PDFrepository_TBL">
+      <EntityTypeMapping TypeName="PDFsystemModel.PDFrepository_TBL">
+        <MappingFragment StoreEntitySet="PDFrepository_TBL">
+          <ScalarProperty Name="contentType" ColumnName="contentType" />
+          <ScalarProperty Name="FileName" ColumnName="FileName" />
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="pdf" ColumnName="pdf" />
+          <ScalarProperty Name="note" ColumnName="note" />
+          <ScalarProperty Name="userID" ColumnName="userID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="users_TBL">
+      <EntityTypeMapping TypeName="PDFsystemModel.users_TBL">
+        <MappingFragment StoreEntitySet="users_TBL">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="username" ColumnName="username" />
+          <ScalarProperty Name="password" ColumnName="password" />
+          <ScalarProperty Name="fullname" ColumnName="fullname" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

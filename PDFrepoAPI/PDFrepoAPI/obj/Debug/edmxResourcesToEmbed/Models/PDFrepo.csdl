@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="PDFsystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="PDFrepository_TBL">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="pdf" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="note" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="userID" Type="Int32" />
+    <NavigationProperty Name="users_TBL" Relationship="Self.FK_PDFrepository_TBL_users_TBL" FromRole="PDFrepository_TBL" ToRole="users_TBL" />
+    <Property Name="FileName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="contentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="users_TBL">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="fullname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="PDFrepository_TBL" Relationship="Self.FK_PDFrepository_TBL_users_TBL" FromRole="users_TBL" ToRole="PDFrepository_TBL" />
+  </EntityType>
+  <Association Name="FK_PDFrepository_TBL_users_TBL">
+    <End Role="users_TBL" Type="Self.users_TBL" Multiplicity="0..1" />
+    <End Role="PDFrepository_TBL" Type="Self.PDFrepository_TBL" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="users_TBL">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="PDFrepository_TBL">
+        <PropertyRef Name="userID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="PDFsystemEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="PDFrepository_TBL" EntityType="Self.PDFrepository_TBL" />
+    <EntitySet Name="users_TBL" EntityType="Self.users_TBL" />
+    <AssociationSet Name="FK_PDFrepository_TBL_users_TBL" Association="Self.FK_PDFrepository_TBL_users_TBL">
+      <End Role="users_TBL" EntitySet="users_TBL" />
+      <End Role="PDFrepository_TBL" EntitySet="PDFrepository_TBL" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
